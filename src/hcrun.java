@@ -31,26 +31,37 @@ public class hcrun {
             return;
         }
 
+        if(args[0] == "all") {
+            runAll();
+        }
         //The RunSpecifics needs to provide methods for how to choose the input file based
         //on the args and how to choose the optimiser (i.e. actual problem solver) for this problem.
         inputFile = rs.chooseFile(args[0]);
 
         if (args.length > 1) {
-            optimiser = rs.chooseOptimiser(args[1]);
-        } else {
-            optimiser = rs.chooseOptimiser(null);
-        }
-
-        if (args.length > 2) {
-            outputFile = rs.chooseOutputFile(args[2]);
+            outputFile = rs.chooseOutputFile(args[1]);
         } else {
             //Default so we don't overwrite if no output file is specified
             outputFile = "./output/result_" + sdf.format(now) + ".txt";
         }
 
+        if (args.length > 2) {
+            optimiser = rs.chooseOptimiser(args[2]);
+        } else {
+            optimiser = rs.chooseOptimiser(null);
+        }
+
+        runOnce(inputFile, optimiser, outputFile, input);
+    }
+
+    private static void runOnce(String inputFile, Optimiser optimiser, String outputFile, TabularData input) {
         //Now actually do the thing.
         InputReader.readFile(inputFile, input);
         TabularData result = optimiser.optimise(input);
         OutputWriter.write(result, outputFile);
+    }
+
+    private static void runAll() {
+
     }
 }

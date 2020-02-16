@@ -50,7 +50,7 @@ public class PracticeRunSpecifics extends RunSpecifics {
                 break;
                 /* etc */
             default:
-                inputFile = arg;
+                inputFile = "./output/" + arg;
                 break;
         }
 
