@@ -3,6 +3,9 @@ package practice;
 import common.Optimiser;
 import common.RunSpecifics;
 
+/**
+ * The run specifics for the 2020 practice problem.
+ */
 public class PracticeRunSpecifics extends RunSpecifics {
     @Override
     public String chooseFile(String arg) {
@@ -45,6 +48,7 @@ public class PracticeRunSpecifics extends RunSpecifics {
             case "1":
                 inputFile = "./output/a_example_output.txt";
                 break;
+                /* etc */
             default:
                 inputFile = arg;
                 break;

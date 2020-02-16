@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+/**
+ * Bog standard Java file reading. Doesn't really need its own class, but just to keep it
+ * out of the way!
+ */
 public class InputReader {
 
     public static void readFile(String filename, TabularData data) {

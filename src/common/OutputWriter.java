@@ -5,6 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Bog standard Java file output. Take a table and write it exactly as is:
+ * rows and columns.
+ */
 public class OutputWriter {
     public static void write(TabularData result, String filepath) {
         try {
