@@ -22,6 +22,7 @@ public class PracticeOptimiser implements Optimiser {
     }
 
     private void init(TabularData inputData) {
+        output.clear();
         maxSlices = inputData.getElementAsInt(0, 0);
         pizzaKinds = inputData.getElementAsInt(0, 0);
         sliceNumbers = inputData.getRowAsIntList(1);
@@ -34,10 +35,11 @@ public class PracticeOptimiser implements Optimiser {
         ArrayList<String> kindList = new ArrayList<>();
 
         for(int i : sliceNumbers) {
-            System.out.println(slicesLeft);
-            slicesLeft -= i;
-            if(slicesLeft < 0) {
-                break;
+            //System.out.println(slicesLeft);
+            if(slicesLeft - i < 0) {
+                continue;
+            } else {
+                slicesLeft -= i;
             }
             kindList.add("" + kindCount);
             kindCount++;
@@ -49,4 +51,6 @@ public class PracticeOptimiser implements Optimiser {
         output.addRow(line1);
         output.addRow(kindList);
     }
+
+
 }

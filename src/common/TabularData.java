@@ -22,6 +22,11 @@ public class TabularData {
         addRow(items);
     }
 
+    public void clear() {
+        rows = new ArrayList<>();
+    }
+
+
     public ArrayList<String> getRow(int row) {
         return rows.get(row);
     }

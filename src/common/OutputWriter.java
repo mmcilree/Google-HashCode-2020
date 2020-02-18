@@ -28,7 +28,7 @@ public class OutputWriter {
             }
             myWriter.close();
         } catch (IOException e) {
-            System.out.println("Whoops.");
+            System.out.println("\nWhoops.");
             e.printStackTrace();
         }
     }

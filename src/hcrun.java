@@ -1,6 +1,7 @@
 import common.*;
 import practice.PracticeRunSpecifics;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,25 +15,28 @@ import java.util.Date;
  * @author Matthew
  */
 public class hcrun {
-    public static void main(String[] args) {
-        //Change this line for the run specifics of whatever HashCode problem we are attempting.
-        RunSpecifics rs =  new PracticeRunSpecifics();
+    //Change this line for the run specifics of whatever HashCode problem we are attempting.
+    private static RunSpecifics rs =  new PracticeRunSpecifics();
 
+    public static void main(String[] args) {
         //Date for appending to unnamed output.
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         Date now = new Date();
 
         TabularData input = new TabularData();
-        Optimiser optimiser;
+
+        //Empty string = Default optimiser
+        Optimiser optimiser = rs.chooseOptimiser("");
         String inputFile, outputFile;
 
         if (args.length < 1) {
-            System.out.print("Need 1 arg for input file");
+            System.out.print("No args. Running on everything in ./input...");
+            runAll(input, optimiser);
             return;
         }
 
         if(args[0] == "all") {
-            runAll();
+            runAll(input, optimiser);
         }
         //The RunSpecifics needs to provide methods for how to choose the input file based
         //on the args and how to choose the optimiser (i.e. actual problem solver) for this problem.
@@ -61,7 +65,21 @@ public class hcrun {
         OutputWriter.write(result, outputFile);
     }
 
-    private static void runAll() {
+
+    //Alternatively... just choose default optimiser for these run specifics
+    //and then run on every input file in the input folder.
+    private static void runAll(TabularData input, Optimiser optimiser) {
+        optimiser = rs.chooseOptimiser("");
+
+        File folder = new File("./input");
+        File[] listOfFiles = folder.listFiles();
+
+        for(File f : listOfFiles) {
+            //Regex gets rid of the extension
+            InputReader.readFile("./input/" + f.getName(), input);
+            TabularData result = optimiser.optimise(input);
+            OutputWriter.write(result, "./output/" + f.getName().replaceFirst("[.][^.]+$", "") + "_out.txt");
+        }
 
     }
 }

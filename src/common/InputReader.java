@@ -13,6 +13,7 @@ public class InputReader {
     public static void readFile(String filename, TabularData data) {
         try {
             File myObj = new File(filename);
+            data.clear();
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 data.parseLine(myReader.nextLine());
