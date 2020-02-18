@@ -66,6 +66,15 @@ public class TabularData {
         rows.add(new ArrayList<String>(items));
     }
 
+    public void addRowOfInts(ArrayList<Integer> items) {
+        ArrayList<String> sNumbers = new ArrayList<String>();
+        for (Integer i: items) {
+            sNumbers.add(String.valueOf(i));
+        }
+
+        addRow(sNumbers);
+    }
+
     //Insert a row at a given position (taking array of String)
     public void insertRow(String[] items, int position) {
         rows.add(position, new ArrayList<String>(Arrays.asList(items)));
