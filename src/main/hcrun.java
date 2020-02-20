@@ -1,31 +1,38 @@
-import common.*;
-import practice.PracticeRunSpecifics;
+package main;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import common.InputReader;
+import common.Optimiser;
+import common.OutputWriter;
+import common.RunSpecifics;
+import common.TabularData;
+import practice.PracticeRunSpecifics;
+
 /**
- * Main class for HashCode problem solver. I've tried to make everything as general
- * as possible so we can adapt to whatever they happen to throw at us.
+ * Main class for HashCode problem solver. I've tried to make everything as
+ * general as possible so we can adapt to whatever they happen to throw at us.
  *
- * I'm not particularly wedded to any of this code so if you think you can improve anything
- * please feel free.
+ * I'm not particularly wedded to any of this code so if you think you can
+ * improve anything please feel free.
  *
  * @author Matthew
  */
 public class hcrun {
-    //Change this line for the run specifics of whatever HashCode problem we are attempting.
-    private static RunSpecifics rs =  new PracticeRunSpecifics();
+    // Change this line for the run specifics of whatever HashCode problem we are
+    // attempting.
+    private static RunSpecifics rs = new PracticeRunSpecifics();
 
     public static void main(String[] args) {
-        //Date for appending to unnamed output.
+        // Date for appending to unnamed output.
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         Date now = new Date();
 
         TabularData input = new TabularData();
 
-        //Empty string = Default optimiser
+        // Empty string = Default optimiser
         Optimiser optimiser = rs.chooseOptimiser("");
         String inputFile, outputFile;
 
@@ -35,17 +42,19 @@ public class hcrun {
             return;
         }
 
-        if(args[0] == "all") {
+        if (args[0] == "all") {
             runAll(input, optimiser);
         }
-        //The RunSpecifics needs to provide methods for how to choose the input file based
-        //on the args and how to choose the optimiser (i.e. actual problem solver) for this problem.
+        // The RunSpecifics needs to provide methods for how to choose the input file
+        // based
+        // on the args and how to choose the optimiser (i.e. actual problem solver) for
+        // this problem.
         inputFile = rs.chooseFile(args[0]);
 
         if (args.length > 1) {
             outputFile = rs.chooseOutputFile(args[1]);
         } else {
-            //Default so we don't overwrite if no output file is specified
+            // Default so we don't overwrite if no output file is specified
             outputFile = "./output/result_" + sdf.format(now) + ".txt";
         }
 
@@ -59,23 +68,22 @@ public class hcrun {
     }
 
     private static void runOnce(String inputFile, Optimiser optimiser, String outputFile, TabularData input) {
-        //Now actually do the thing.
+        // Now actually do the thing.
         InputReader.readFile(inputFile, input);
         TabularData result = optimiser.optimise(input);
         OutputWriter.write(result, outputFile);
     }
 
-
-    //Alternatively... just choose default optimiser for these run specifics
-    //and then run on every input file in the input folder.
+    // Alternatively... just choose default optimiser for these run specifics
+    // and then run on every input file in the input folder.
     private static void runAll(TabularData input, Optimiser optimiser) {
         optimiser = rs.chooseOptimiser("");
 
         File folder = new File("./input");
         File[] listOfFiles = folder.listFiles();
 
-        for(File f : listOfFiles) {
-            //Regex gets rid of the extension
+        for (File f : listOfFiles) {
+            // Regex gets rid of the extension
             InputReader.readFile("./input/" + f.getName(), input);
             TabularData result = optimiser.optimise(input);
             OutputWriter.write(result, "./output/" + f.getName().replaceFirst("[.][^.]+$", "") + "_out.txt");
