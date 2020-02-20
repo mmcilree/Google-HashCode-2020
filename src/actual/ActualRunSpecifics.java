@@ -6,7 +6,11 @@ import common.RunSpecifics;
 public class ActualRunSpecifics implements RunSpecifics {
     @Override
     public String chooseFile(String arg) {
-        return "";
+        if(arg == "d") {
+            return "./input/d_tough_choices";
+        } else {
+            return "";
+        }
     }
 
     @Override

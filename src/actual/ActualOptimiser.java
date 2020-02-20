@@ -144,6 +144,12 @@ public class ActualOptimiser implements Optimiser {
                         }
                     }
                 }
+
+                for (int j = signedUp.size() -1; j >= 0; j--) {
+                    if(!booksShipped.containsKey(signedUp.get(j).ID)) {
+                        signedUp.remove(j);
+                    }
+                }
             }
             // Step 4: Profit?
             TabularData result = new TabularData();

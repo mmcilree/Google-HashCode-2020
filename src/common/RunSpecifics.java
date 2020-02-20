@@ -8,6 +8,7 @@ package common;
 public interface RunSpecifics {
     String chooseFile(String arg);
 
+
     Optimiser chooseOptimiser(String arg);
 
     String chooseOutputFile(String arg);
