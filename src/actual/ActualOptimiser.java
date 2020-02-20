@@ -1,10 +1,12 @@
 package actual;
 
-import common.Optimiser;
-import common.TabularData;
-
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+
+import common.Optimiser;
+import common.TabularData;
 
 public class ActualOptimiser implements Optimiser {
 
@@ -78,14 +80,23 @@ public class ActualOptimiser implements Optimiser {
             if (x + days <= maxDays) {
                 days += x;
                 signupOrd.add(l);
-            } else
+            } else {
                 break;
+            }
         }
-        i=signupOrd.get(0).numDays;
-        for (int d = 0; d < maxDays; d++) {
-
+        i = signupOrd.get(0).numDays;
+        int next = 1;
+        ArrayList<Library> signedUp = new ArrayList<>();
+        HashSet<Integer> booksShipped = new HashSet<>();
+        signedUp.add(signupOrd.get(0));
+        for (int d = i; d < maxDays; d++) {
+            if (d >= i + signupOrd.get(next).numDays) {
+                i += signupOrd.get(next).numDays;
+                signedUp.add(signupOrd.get(next++));
+            }
+            for()
         }
-        //Step 4: Profit?
+        // Step 4: Profit?
         System.out.print(libraries.get(0));
     }
 }
