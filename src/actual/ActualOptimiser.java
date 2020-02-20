@@ -106,7 +106,7 @@ public class ActualOptimiser implements Optimiser {
         ArrayList<Library> signupOrd = new ArrayList<>();
         int days = 0;
         int i = 0;
-        while (days < maxDays) {
+        while (days < maxDays && i< libraries.size()) {
             Library l = libraries.get(i++);
             int x = l.numDays;
             if (x + days <= maxDays) {
