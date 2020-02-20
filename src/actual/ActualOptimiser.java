@@ -67,7 +67,7 @@ public class ActualOptimiser implements Optimiser {
     public TabularData optimise(TabularData inputData) {
         init(inputData);
         inputData.clear();
-        algorithm1();
+        TabularData result = algorithm1();
         return new TabularData();
     }
 
@@ -96,7 +96,7 @@ public class ActualOptimiser implements Optimiser {
         System.out.println();
 
     }
-
+    /*
     public void algorithm1() {
         Collections.sort(libraries);
         ArrayList<Library> signupOrd = new ArrayList<>();
@@ -126,5 +126,30 @@ public class ActualOptimiser implements Optimiser {
         }
         // Step 4: Profit?
         System.out.print(libraries.get(0));
+    }*/
+
+    public void dumb() {
+        TabularData result = new TabularData();
+        ArrayList<String> line1 = new ArrayList<>();
+        line1.add("1");
+        result.addRow(line1);
+
+
+        int mostBooks = (maxDays - libraries.get(0).numDays)*libraries.get(0).numShip;
+
+        ArrayList<String> line2 = new ArrayList<>();
+        line2.add("0");
+        line2.add("" + mostBooks);
+        result.addRow(line2);
+
+        ArrayList<String> line3 = new ArrayList<>();
+
+        for(int i = 0; i < mostBooks; i++) {
+            line3.add(libraries.get(0).bookIDs.get(i));
+        }
+
+        result.addRow(line3);
     }
+
+
 }
