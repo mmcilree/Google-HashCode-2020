@@ -88,6 +88,7 @@ public class hcrun {
             InputReader.readFile("./input/" + f.getName(), input);
             TabularData result = optimiser.optimise(input);
             OutputWriter.write(result, "./output/" + f.getName().replaceFirst("[.][^.]+$", "") + "_out.txt");
+            input.clear();
         }
 
     }

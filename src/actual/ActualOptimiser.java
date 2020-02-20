@@ -61,7 +61,7 @@ public class ActualOptimiser implements Optimiser {
     int numLibraries;
     int maxDays;
     ArrayList<Integer> bookVals;
-    ArrayList<Library> libraries = new ArrayList<>();
+    ArrayList<Library> libraries;
 
     @Override
     public TabularData optimise(TabularData inputData) {
@@ -71,7 +71,7 @@ public class ActualOptimiser implements Optimiser {
     }
 
     public void init(TabularData inputData) {
-
+        libraries = new ArrayList<>();
         numDifferentBooks = inputData.getElementAsInt(0, 0);
         numLibraries = inputData.getElementAsInt(0, 1);
         maxDays = inputData.getElementAsInt(0, 2);
