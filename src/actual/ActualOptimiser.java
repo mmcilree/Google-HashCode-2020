@@ -10,18 +10,42 @@ import common.TabularData;
 
 public class ActualOptimiser implements Optimiser {
 
+    public class Book implements Comparable {
+        int ID;
+        int value;
+
+        public Book(int ID, int value) {
+            this.ID = ID;
+            this.value = value;
+        }
+
+        @Override
+        public int compareTo(Object o) {
+            if (o instanceof Book) {
+                return Integer.compare(((Book) o).value, this.value);
+            }
+            return 0;
+        }
+
+    }
+
     public class Library implements Comparable {
         int numBooks;
         int numDays;
         int numShip;
         int totalVal;
+        ArrayList<Book> books;
         ArrayList<Integer> bookIDs;
 
         public void calculateTotalVal() {
             totalVal = 0;
-            for (int i : bookIDs) {
-                totalVal += bookVals.get(i);
+            for (Book b : books) {
+                totalVal += b.value;
             }
+        }
+
+        public void sortBooks() {
+            Collections.sort(books);
         }
 
         @Override
@@ -60,6 +84,10 @@ public class ActualOptimiser implements Optimiser {
             l.numDays = inputData.getElementAsInt(i, 1);
             l.numShip = inputData.getElementAsInt(i, 2);
             l.bookIDs = inputData.getRowAsIntList(i + 1);
+
+            for(int id : l.bookIDs) {
+                l.books.add(new Book(id, bookVals.get(id)));
+            }
             l.calculateTotalVal();
             libraries.add(l);
         }
