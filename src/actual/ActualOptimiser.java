@@ -4,19 +4,36 @@ import common.Optimiser;
 import common.TabularData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ActualOptimiser implements Optimiser {
 
-    public class Library {
+    public class Library implements Comparable {
         int numBooks;
         int numDays;
         int numShip;
+        int totalVal;
         ArrayList<Integer> bookIDs;
+
+        public void calculateTotalVal() {
+            totalVal = 0;
+            for (int i : bookIDs) {
+                totalVal += bookVals.get(i);
+            }
+        }
+
+        @Override
+        public int compareTo(Object o) {
+            if (o instanceof Library) {
+                return Integer.compare(((Library) o).totalVal, this.totalVal);
+            }
+            return 0;
+        }
     }
 
     int numDifferentBooks;
     int numLibraries;
-    int numDays;
+    int maxDays;
     ArrayList<Integer> bookVals;
     ArrayList<Library> libraries = new ArrayList<>();
 
@@ -24,6 +41,7 @@ public class ActualOptimiser implements Optimiser {
     public TabularData optimise(TabularData inputData) {
         init(inputData);
         inputData.clear();
+        algorithm1();
         return new TabularData();
     }
 
@@ -31,20 +49,43 @@ public class ActualOptimiser implements Optimiser {
 
         numDifferentBooks = inputData.getElementAsInt(0, 0);
         numLibraries = inputData.getElementAsInt(0, 1);
-        numDays = inputData.getElementAsInt(0, 2);
+        maxDays = inputData.getElementAsInt(0, 2);
         bookVals = inputData.getRowAsIntList(1);
-        for(int i = 2; i < (numLibraries*2) + 2; i+=2) {
+        for (int i = 2; i < (numLibraries * 2) + 2; i += 2) {
             Library l = new Library();
 
-            l.numBooks =  inputData.getElementAsInt(i,0);
+            l.numBooks = inputData.getElementAsInt(i, 0);
             l.numDays = inputData.getElementAsInt(i, 1);
             l.numShip = inputData.getElementAsInt(i, 2);
-            l.bookIDs = inputData.getRowAsIntList(i+1);
+            l.bookIDs = inputData.getRowAsIntList(i + 1);
+            l.calculateTotalVal();
             libraries.add(l);
         }
 
-        System.out.println(numDifferentBooks + " " + numLibraries + " " + numDays);
+        System.out.println(numDifferentBooks + " " + numLibraries + " " + maxDays);
         System.out.println();
 
+    }
+
+    public void algorithm1() {
+        Collections.sort(libraries);
+        ArrayList<Library> signupOrd = new ArrayList<>();
+        int days = 0;
+        int i = 0;
+        while (days < maxDays) {
+            Library l = libraries.get(i++);
+            int x = l.numDays;
+            if (x + days <= maxDays) {
+                days += x;
+                signupOrd.add(l);
+            } else
+                break;
+        }
+        i=signupOrd.get(0).numDays;
+        for (int d = 0; d < maxDays; d++) {
+
+        }
+        //Step 4: Profit?
+        System.out.print(libraries.get(0));
     }
 }
