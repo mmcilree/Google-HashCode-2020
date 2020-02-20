@@ -5,10 +5,10 @@ package common;
  * Could use a switch based on arg value e.g. for choosing input:
  *      "1" -> "a_example.in"
  */
-public abstract class RunSpecifics {
-    public abstract String chooseFile(String arg);
+public interface RunSpecifics {
+    String chooseFile(String arg);
 
-    public abstract Optimiser chooseOptimiser(String arg);
+    Optimiser chooseOptimiser(String arg);
 
-    public abstract String chooseOutputFile(String arg);
+    String chooseOutputFile(String arg);
 }

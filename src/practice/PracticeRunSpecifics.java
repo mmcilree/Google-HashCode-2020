@@ -6,7 +6,7 @@ import common.RunSpecifics;
 /**
  * The run specifics for the 2020 practice problem.
  */
-public class PracticeRunSpecifics extends RunSpecifics {
+public class PracticeRunSpecifics implements RunSpecifics {
     @Override
     public String chooseFile(String arg) {
         String inputFile;
