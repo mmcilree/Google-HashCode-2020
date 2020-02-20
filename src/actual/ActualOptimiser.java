@@ -34,6 +34,7 @@ public class ActualOptimiser implements Optimiser {
         int numShip;
         int totalVal;
         int ID;
+        int potential;
         ArrayList<Book> books;
         ArrayList<Integer> bookIDs;
 
@@ -51,9 +52,27 @@ public class ActualOptimiser implements Optimiser {
         @Override
         public int compareTo(Object o) {
             if (o instanceof Library) {
-                return Integer.compare(((Library) o).totalVal, this.totalVal);
+                return Integer.compare(((Library) o).potential, this.potential);
             }
             return 0;
+        }
+
+        public void calculateLibraryPotential(ArrayList<Library> orderSoFar, HashSet<Integer> booksShipped) {
+            int timeSpent = 0;
+            int tempValue = 0;
+
+            for(Library l : orderSoFar) {
+                timeSpent += l.numDays;
+            }
+
+            int timeLeft = maxDays - timeSpent;
+
+            for(int i = 0; i < Math.min(timeLeft*this.numShip, this.numBooks); i++) {
+                if(i < books.size() && !booksShipped.contains(this.books.get(i))) {
+                    tempValue += this.books.get(i).value;
+                }
+            }
+            this.potential = tempValue;
         }
     }
 
@@ -99,49 +118,92 @@ public class ActualOptimiser implements Optimiser {
         System.out.println();
 
     }
+    /*
+    public TabularData algorithm2() {
+        ArrayList<Library> orderSoFar = new ArrayList<>();
+        HashMap<Integer, HashSet<String>> booksShipped = new HashMap<>();
+        HashSet<Integer> bookIDs = new HashSet<>();
+        int timeleft = maxDays;
+
+        while (true) {
+            for (Library l : libraries) {
+                l.calculateLibraryPotential(orderSoFar, bookIDs);
+            }
+
+            Collections.sort(libraries);
+
+            for(Book b : libraries.get(0).books) {
+                orderSoFar.add(libraries.get(0));
+                if(!bookIDs.contains(b.ID)) {
+                    if(!booksShipped.containsKey(libraries.get(0).ID))
+                        booksShipped.put(libraries.get(0).ID, new HashSet<String>());
+                    booksShipped.get(libraries.get(0).ID).add(""+b.ID);
+                    bookIDs.add(b.ID);
+                    libraries.get(0).numShip;
+                }
+            }
+
+        }
+    }*/
+
 
     @SuppressWarnings("unchecked")
     public TabularData algorithm1() {
         Collections.sort(libraries);
         ArrayList<Library> signupOrd = new ArrayList<>();
+        ArrayList<Library> librariesRemaining = new ArrayList<>();
+        HashMap<Integer, HashSet<String>> booksShipped = new HashMap<>();
+        HashSet<Integer> booksShippedIDs = new HashSet<>();
+
+        for(Library l : libraries) {
+            librariesRemaining.add(l);
+        }
+
         int days = 0;
-        int i = 0;
-        while (days < maxDays && i< libraries.size()) {
-            Library l = libraries.get(i++);
+        while (days < maxDays && librariesRemaining.size() > 0) {
+            for(Library h : librariesRemaining) {
+                h.calculateLibraryPotential(signupOrd, booksShippedIDs);
+            }
+            Collections.sort(librariesRemaining);
+            Library l = librariesRemaining.get(0);
+
+            System.out.println("Best potential = id " + l.ID + ", " + l.potential);
             int x = l.numDays;
             if (x + days <= maxDays) {
                 days += x;
                 signupOrd.add(l);
+                librariesRemaining.remove(l);
+
+                int ableToShip = l.numShip;
+                int shipped = 0;
+                while (shipped < ableToShip && l.bookIDs.size() > 0) {
+                    int id = l.bookIDs.remove(0);
+                    if (!booksShippedIDs.contains(id)) {
+                        if(!booksShipped.containsKey(l.ID))
+                            booksShipped.put(l.ID, new HashSet<String>());
+                        booksShipped.get(l.ID).add(""+id);
+                        booksShippedIDs.add(id);
+                        shipped++;
+                    }
+                }
+
+
+
             } else {
                 break;
             }
         }
         if (signupOrd.size() > 0) {
-            i = signupOrd.get(0).numDays;
+            int i = signupOrd.get(0).numDays;
             int next = 1;
             ArrayList<Library> signedUp = new ArrayList<>();
-            HashMap<Integer, HashSet<String>> booksShipped = new HashMap<>();
-            HashSet<Integer> booksShippedIDs = new HashSet<>();
+
             signedUp.add(signupOrd.get(0));
             for (int d = i; d < maxDays; d++) {
                 if (next < signupOrd.size()) {
                     if (d >= i + signupOrd.get(next).numDays) {
                         i += signupOrd.get(next).numDays;
                         signedUp.add(signupOrd.get(next++));
-                    }
-                }
-                for (Library l : signedUp) {
-                    int ableToShip = l.numShip;
-                    int shipped = 0;
-                    while (shipped < ableToShip && l.bookIDs.size() > 0) {
-                        int id = l.bookIDs.remove(0);
-                        if (!booksShippedIDs.contains(id)) {
-                            if(!booksShipped.containsKey(l.ID))
-                                booksShipped.put(l.ID, new HashSet<String>());
-                            booksShipped.get(l.ID).add(""+id);
-                            booksShippedIDs.add(id);
-                            shipped++;
-                        }
                     }
                 }
 
