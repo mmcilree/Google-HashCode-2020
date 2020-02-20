@@ -3,7 +3,6 @@ package actual;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 
 import common.Optimiser;
 import common.TabularData;
@@ -26,7 +25,6 @@ public class ActualOptimiser implements Optimiser {
             }
             return 0;
         }
-
     }
 
     public class Library implements Comparable {
@@ -34,7 +32,7 @@ public class ActualOptimiser implements Optimiser {
         int numDays;
         int numShip;
         int totalVal;
-        ArrayList<Book> books;
+        HashSet<Book> books;
         ArrayList<Integer> bookIDs;
 
         public void calculateTotalVal() {
@@ -67,7 +65,7 @@ public class ActualOptimiser implements Optimiser {
     public TabularData optimise(TabularData inputData) {
         init(inputData);
         inputData.clear();
-        TabularData result = algorithm1();
+        algorithm1();
         return new TabularData();
     }
 
@@ -84,10 +82,12 @@ public class ActualOptimiser implements Optimiser {
             l.numDays = inputData.getElementAsInt(i, 1);
             l.numShip = inputData.getElementAsInt(i, 2);
             l.bookIDs = inputData.getRowAsIntList(i + 1);
+            l.books = new HashSet<>();
 
-            for(int id : l.bookIDs) {
+            for (int id : l.bookIDs) {
                 l.books.add(new Book(id, bookVals.get(id)));
             }
+
             l.calculateTotalVal();
             libraries.add(l);
         }
@@ -96,7 +96,8 @@ public class ActualOptimiser implements Optimiser {
         System.out.println();
 
     }
-    /*
+
+    @SuppressWarnings("unchecked")
     public void algorithm1() {
         Collections.sort(libraries);
         ArrayList<Library> signupOrd = new ArrayList<>();
@@ -112,44 +113,33 @@ public class ActualOptimiser implements Optimiser {
                 break;
             }
         }
-        i = signupOrd.get(0).numDays;
-        int next = 1;
-        ArrayList<Library> signedUp = new ArrayList<>();
-        HashSet<Integer> booksShipped = new HashSet<>();
-        signedUp.add(signupOrd.get(0));
-        for (int d = i; d < maxDays; d++) {
-            if (d >= i + signupOrd.get(next).numDays) {
-                i += signupOrd.get(next).numDays;
-                signedUp.add(signupOrd.get(next++));
+        if (signupOrd.size() > 0) {
+            i = signupOrd.get(0).numDays;
+            int next = 1;
+            ArrayList<Library> signedUp = new ArrayList<>();
+            HashSet<Integer> booksShipped = new HashSet<>();
+            signedUp.add(signupOrd.get(0));
+            for (int d = i; d < maxDays; d++) {
+                if (next < signupOrd.size()) {
+                    if (d >= i + signupOrd.get(next).numDays) {
+                        i += signupOrd.get(next).numDays;
+                        signedUp.add(signupOrd.get(next++));
+                    }
+                }
+                for (Library l : signedUp) {
+                    int ableToShip = l.numShip;
+                    int shipped = 0;
+                    while (shipped < ableToShip && l.bookIDs.size() > 0) {
+                        int id = l.bookIDs.remove(0);
+                        if (!booksShipped.contains(id)) {
+                            booksShipped.add(id);
+                            shipped++;
+                        }
+                    }
+                }
             }
-            for()
         }
         // Step 4: Profit?
         System.out.print(libraries.get(0));
-    }*/
-
-    public void dumb() {
-        TabularData result = new TabularData();
-        ArrayList<String> line1 = new ArrayList<>();
-        line1.add("1");
-        result.addRow(line1);
-
-
-        int mostBooks = (maxDays - libraries.get(0).numDays)*libraries.get(0).numShip;
-
-        ArrayList<String> line2 = new ArrayList<>();
-        line2.add("0");
-        line2.add("" + mostBooks);
-        result.addRow(line2);
-
-        ArrayList<String> line3 = new ArrayList<>();
-
-        for(int i = 0; i < mostBooks; i++) {
-            line3.add(libraries.get(0).bookIDs.get(i));
-        }
-
-        result.addRow(line3);
     }
-
-
 }
