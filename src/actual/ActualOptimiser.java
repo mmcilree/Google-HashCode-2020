@@ -28,12 +28,13 @@ public class ActualOptimiser implements Optimiser {
         }
     }
 
-    public class Library implements Comparable {
+    public class Library implements Comparable<Library> {
         int numBooks;
         int numDays;
         int numShip;
         int totalVal;
         int ID;
+        int numUnique;
         ArrayList<Book> books;
         ArrayList<Integer> bookIDs;
 
@@ -44,16 +45,29 @@ public class ActualOptimiser implements Optimiser {
             }
         }
 
+        public void calculateUniqueBooks() {
+            ArrayList<Book> uniqueBooks = new ArrayList<Book>();
+            for (Book b : books) {
+                uniqueBooks.add(b);
+            }
+            for (Library l : libraries) {
+                for (Book b : l.books) {
+                    if (uniqueBooks.contains(b)) {
+                        uniqueBooks.remove(b);
+                    }
+                }
+            }
+            numUnique = uniqueBooks.size();
+        }
+
         public void sortBooks() {
             Collections.sort(books);
         }
 
         @Override
-        public int compareTo(Object o) {
-            if (o instanceof Library) {
-                return Integer.compare(((Library) o).totalVal, this.totalVal);
-            }
-            return 0;
+        public int compareTo(Library l) {
+            return Integer.compare((int) (Math.pow(l.totalVal * l.numShip, .5) / Math.pow(l.numDays, 2)), (int) (Math.pow(this.totalVal
+                    * this.numShip, .5) / Math.pow(this.numDays, 2)));
         }
     }
 
@@ -106,7 +120,7 @@ public class ActualOptimiser implements Optimiser {
         ArrayList<Library> signupOrd = new ArrayList<>();
         int days = 0;
         int i = 0;
-        while (days < maxDays && i< libraries.size()) {
+        while (days < maxDays && i < libraries.size()) {
             Library l = libraries.get(i++);
             int x = l.numDays;
             if (x + days <= maxDays) {
@@ -136,17 +150,18 @@ public class ActualOptimiser implements Optimiser {
                     while (shipped < ableToShip && l.bookIDs.size() > 0) {
                         int id = l.bookIDs.remove(0);
                         if (!booksShippedIDs.contains(id)) {
-                            if(!booksShipped.containsKey(l.ID))
+                            if (!booksShipped.containsKey(l.ID)) {
                                 booksShipped.put(l.ID, new HashSet<String>());
-                            booksShipped.get(l.ID).add(""+id);
+                            }
+                            booksShipped.get(l.ID).add("" + id);
                             booksShippedIDs.add(id);
                             shipped++;
                         }
                     }
                 }
 
-                for (int j = signedUp.size() -1; j >= 0; j--) {
-                    if(!booksShipped.containsKey(signedUp.get(j).ID)) {
+                for (int j = signedUp.size() - 1; j >= 0; j--) {
+                    if (!booksShipped.containsKey(signedUp.get(j).ID)) {
                         signedUp.remove(j);
                     }
                 }
@@ -158,7 +173,7 @@ public class ActualOptimiser implements Optimiser {
             line1.add("" + signedUp.size());
             result.addRow(line1);
 
-            for(Library l : signedUp) {
+            for (Library l : signedUp) {
                 ArrayList<String> infoLine = new ArrayList<>();
                 infoLine.add("" + l.ID);
                 infoLine.add("" + booksShipped.get(l.ID).size());
