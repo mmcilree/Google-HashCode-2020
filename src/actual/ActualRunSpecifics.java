@@ -6,16 +6,16 @@ import common.RunSpecifics;
 public class ActualRunSpecifics implements RunSpecifics {
     @Override
     public String chooseFile(String arg) {
-        return null;
+        return "";
     }
 
     @Override
     public Optimiser chooseOptimiser(String arg) {
-        return null;
+        return new ActualOptimiser();
     }
 
     @Override
     public String chooseOutputFile(String arg) {
-        return null;
+        return "";
     }
 }

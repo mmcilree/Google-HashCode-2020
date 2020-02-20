@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import actual.ActualRunSpecifics;
 import common.InputReader;
 import common.Optimiser;
 import common.OutputWriter;
@@ -23,7 +24,7 @@ import practice.PracticeRunSpecifics;
 public class hcrun {
     // Change this line for the run specifics of whatever HashCode problem we are
     // attempting.
-    private static RunSpecifics rs = new PracticeRunSpecifics();
+    private static RunSpecifics rs = new ActualRunSpecifics();
 
     public static void main(String[] args) {
         // Date for appending to unnamed output.
