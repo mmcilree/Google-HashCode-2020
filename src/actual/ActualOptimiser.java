@@ -2,6 +2,7 @@ package actual;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import common.Optimiser;
@@ -32,7 +33,8 @@ public class ActualOptimiser implements Optimiser {
         int numDays;
         int numShip;
         int totalVal;
-        HashSet<Book> books;
+        int ID;
+        ArrayList<Book> books;
         ArrayList<Integer> bookIDs;
 
         public void calculateTotalVal() {
@@ -65,8 +67,7 @@ public class ActualOptimiser implements Optimiser {
     public TabularData optimise(TabularData inputData) {
         init(inputData);
         inputData.clear();
-        algorithm1();
-        return new TabularData();
+        return algorithm1();
     }
 
     public void init(TabularData inputData) {
@@ -82,13 +83,15 @@ public class ActualOptimiser implements Optimiser {
             l.numDays = inputData.getElementAsInt(i, 1);
             l.numShip = inputData.getElementAsInt(i, 2);
             l.bookIDs = inputData.getRowAsIntList(i + 1);
-            l.books = new HashSet<>();
+            l.books = new ArrayList<>();
+            l.ID = libraries.size();
 
             for (int id : l.bookIDs) {
                 l.books.add(new Book(id, bookVals.get(id)));
             }
 
             l.calculateTotalVal();
+            l.sortBooks();
             libraries.add(l);
         }
 
@@ -98,7 +101,7 @@ public class ActualOptimiser implements Optimiser {
     }
 
     @SuppressWarnings("unchecked")
-    public void algorithm1() {
+    public TabularData algorithm1() {
         Collections.sort(libraries);
         ArrayList<Library> signupOrd = new ArrayList<>();
         int days = 0;
@@ -117,7 +120,8 @@ public class ActualOptimiser implements Optimiser {
             i = signupOrd.get(0).numDays;
             int next = 1;
             ArrayList<Library> signedUp = new ArrayList<>();
-            HashSet<Integer> booksShipped = new HashSet<>();
+            HashMap<Integer, HashSet<String>> booksShipped = new HashMap<>();
+            HashSet<Integer> booksShippedIDs = new HashSet<>();
             signedUp.add(signupOrd.get(0));
             for (int d = i; d < maxDays; d++) {
                 if (next < signupOrd.size()) {
@@ -131,15 +135,37 @@ public class ActualOptimiser implements Optimiser {
                     int shipped = 0;
                     while (shipped < ableToShip && l.bookIDs.size() > 0) {
                         int id = l.bookIDs.remove(0);
-                        if (!booksShipped.contains(id)) {
-                            booksShipped.add(id);
+                        if (!booksShippedIDs.contains(id)) {
+                            if(!booksShipped.containsKey(l.ID))
+                                booksShipped.put(l.ID, new HashSet<String>());
+                            booksShipped.get(l.ID).add(""+id);
+                            booksShippedIDs.add(id);
                             shipped++;
                         }
                     }
                 }
             }
+            // Step 4: Profit?
+            TabularData result = new TabularData();
+
+            ArrayList<String> line1 = new ArrayList<>();
+            line1.add("" + signedUp.size());
+            result.addRow(line1);
+
+            for(Library l : signedUp) {
+                ArrayList<String> infoLine = new ArrayList<>();
+                infoLine.add("" + l.ID);
+                infoLine.add("" + booksShipped.get(l.ID).size());
+                result.addRow(infoLine);
+
+                ArrayList<String> bookLine = new ArrayList<>();
+                bookLine.addAll(booksShipped.get(l.ID));
+                result.addRow(bookLine);
+            }
+
+            return result;
         }
-        // Step 4: Profit?
-        System.out.print(libraries.get(0));
+
+        return new TabularData();
     }
 }
